@@ -16,7 +16,15 @@ const argv = yargs
 
 // Load environment variables.
 dotenv.config();
-const { NODE_URL, INFURA_KEY, MNEMONIC, ETHERSCAN_API_KEY, PK, SOLIDITY_VERSION, SOLIDITY_SETTINGS } = process.env;
+const {
+  NODE_URL,
+  INFURA_KEY,
+  MNEMONIC,
+  ETHERSCAN_API_KEY,
+  PK,
+  SOLIDITY_VERSION,
+  SOLIDITY_SETTINGS,
+} = process.env;
 
 const DEFAULT_MNEMONIC =
   "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat";
@@ -30,18 +38,32 @@ if (PK) {
   };
 }
 
-if (["mainnet", "rinkeby", "kovan", "goerli", "ropsten", "mumbai", "polygon"].includes(argv.network) && INFURA_KEY === undefined) {
+if (
+  [
+    "mainnet",
+    "rinkeby",
+    "kovan",
+    "goerli",
+    "ropsten",
+    "mumbai",
+    "polygon",
+    "apothem",
+  ].includes(argv.network) &&
+  INFURA_KEY === undefined
+) {
   throw new Error(
-    `Could not find Infura key in env, unable to connect to network ${argv.network}`,
+    `Could not find Infura key in env, unable to connect to network ${argv.network}`
   );
 }
 
-import "./src/tasks/local_verify"
-import "./src/tasks/deploy_contracts"
-import "./src/tasks/show_codesize"
+import "./src/tasks/local_verify";
+import "./src/tasks/deploy_contracts";
+import "./src/tasks/show_codesize";
 
-const primarySolidityVersion = SOLIDITY_VERSION || "0.7.6"
-const soliditySettings = !!SOLIDITY_SETTINGS ? JSON.parse(SOLIDITY_SETTINGS) : undefined
+const primarySolidityVersion = SOLIDITY_VERSION || "0.7.6";
+const soliditySettings = !!SOLIDITY_SETTINGS
+  ? JSON.parse(SOLIDITY_SETTINGS)
+  : undefined;
 
 const userConfig: HardhatUserConfig = {
   paths: {
@@ -53,15 +75,15 @@ const userConfig: HardhatUserConfig = {
   solidity: {
     compilers: [
       { version: primarySolidityVersion, settings: soliditySettings },
-      { version: "0.6.12" },
-      { version: "0.5.17" },
-    ]
+      { version: "0.6.12", settings: soliditySettings },
+      { version: "0.5.17", settings: soliditySettings },
+    ],
   },
   networks: {
     hardhat: {
       allowUnlimitedContractSize: true,
       blockGasLimit: 100000000,
-      gas: 100000000
+      gas: 100000000,
     },
     mainnet: {
       ...sharedNetworkConfig,
@@ -118,6 +140,6 @@ if (NODE_URL) {
   userConfig.networks!!.custom = {
     ...sharedNetworkConfig,
     url: NODE_URL,
-  }
+  };
 }
-export default userConfig
+export default userConfig;

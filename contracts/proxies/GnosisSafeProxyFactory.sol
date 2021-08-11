@@ -44,13 +44,7 @@ contract GnosisSafeProxyFactory {
         bytes memory initializer,
         uint256 saltNonce
     ) internal returns (GnosisSafeProxy proxy) {
-        // If the initializer changes the proxy address should change too. Hashing the initializer data is cheaper than just concatinating it
-        bytes32 salt = keccak256(abi.encodePacked(keccak256(initializer), saltNonce));
-        bytes memory deploymentData = abi.encodePacked(type(GnosisSafeProxy).creationCode, uint256(uint160(_singleton)));
-        // solhint-disable-next-line no-inline-assembly
-        assembly {
-            proxy := create2(0x0, add(0x20, deploymentData), mload(deploymentData), salt)
-        }
+        proxy = new GnosisSafeProxy(_singleton);
         require(address(proxy) != address(0), "Create2 call failed");
     }
 

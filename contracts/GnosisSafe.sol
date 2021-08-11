@@ -341,7 +341,7 @@ contract GnosisSafe is
         uint256 id;
         // solhint-disable-next-line no-inline-assembly
         assembly {
-            id := chainid()
+            id := 51
         }
         return id;
     }
