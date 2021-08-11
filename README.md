@@ -10,9 +10,13 @@ This repo was forked for the purpose of XinFin depoyment. This README generally 
 
 ### Proxy and deployment
 
-Hardhat deployments can be done on XinFin through a compatibility proxy.
+Hardhat deployments can be done on XinFin through a compatibility proxy. The proxy itself is a part of `safe-transaction-service`. To run it manually, clone https://github.com/yodaplus/gnosis-safe-transaction-service, go to `./proxy` and run:
 
-TODO: explain proxy setup once its repo is ready.
+```
+nvm use
+yarn
+PORT=8084 yarn start
+```
 
 To deploy contracts, use the following command:
 
