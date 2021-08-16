@@ -2,13 +2,14 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const deploy: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  const { deployments, getNamedAccounts } = hre;
+  const { deployments, getNamedAccounts, getChainId } = hre;
   const { deployer } = await getNamedAccounts();
   const { deploy } = deployments;
+  const chainId = await getChainId();
 
   await deploy("GnosisSafe", {
     from: deployer,
-    args: [],
+    args: [chainId],
     log: true,
   });
 };

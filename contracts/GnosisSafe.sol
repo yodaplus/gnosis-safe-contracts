@@ -54,13 +54,16 @@ contract GnosisSafe is
     mapping(bytes32 => uint256) public signedMessages;
     // Mapping to keep track of all hashes (message or transaction) that have been approved by ANY owners
     mapping(address => mapping(bytes32 => uint256)) public approvedHashes;
+    uint256 private chainId_;
 
     // This constructor ensures that this contract can only be used as a master copy for Proxy contracts
-    constructor() {
+    constructor(uint256 chainId) {
         // By setting the threshold it is not possible to call setup anymore,
         // so we create a Safe with 0 owners and threshold 1.
         // This is an unusable Safe, perfect for the singleton
         threshold = 1;
+
+        chainId_ = chainId;
     }
 
     /// @dev Setup function sets initial storage of contract.
@@ -338,12 +341,7 @@ contract GnosisSafe is
 
     /// @dev Returns the chain id used by this contract.
     function getChainId() public view returns (uint256) {
-        uint256 id;
-        // solhint-disable-next-line no-inline-assembly
-        assembly {
-            id := 51
-        }
-        return id;
+        return chainId_;
     }
 
     function domainSeparator() public view returns (bytes32) {
