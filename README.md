@@ -4,7 +4,7 @@
 [![Build Status](https://github.com/gnosis/safe-contracts/workflows/safe-contracts/badge.svg?branch=development)](https://github.com/gnosis/safe-contracts/actions)
 [![Coverage Status](https://coveralls.io/repos/github/gnosis/safe-contracts/badge.svg?branch=development)](https://coveralls.io/github/gnosis/safe-contracts)
 
-## XinFin-relayed notes
+## XinFin-related notes
 
 This repo was forked for the purpose of XinFin depoyment. This README generally holds true, with some specifics, mentioned next.
 
