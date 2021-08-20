@@ -7,8 +7,6 @@ import "./GnosisSafe.sol";
 /// @author Stefan George - <stefan@gnosis.io>
 /// @author Richard Meissner - <richard@gnosis.io>
 contract GnosisSafeL2 is GnosisSafe {
-    constructor(uint256 chainId) GnosisSafe(chainId) {}
-
     event SafeMultiSigTransaction(
         address to,
         uint256 value,

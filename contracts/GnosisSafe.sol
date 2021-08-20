@@ -32,10 +32,10 @@ contract GnosisSafe is
 
     string public constant VERSION = "1.3.0";
 
-    // keccak256(
-    //     "EIP712Domain(uint256 chainId,address verifyingContract)"
-    // );
-    bytes32 private constant DOMAIN_SEPARATOR_TYPEHASH = 0x47e79534a245952e8b16893a336b85a3d9ea9fa8c573f3d803afb92a79469218;
+    //keccak256(
+    //    "EIP712Domain(address verifyingContract)"
+    //);
+    bytes32 private constant DOMAIN_SEPARATOR_TYPEHASH = 0x035aff83d86937d35b32e04f0ddc6ff469290eef2f1b692d8a815c89404d4749;
 
     // keccak256(
     //     "SafeTx(address to,uint256 value,bytes data,uint8 operation,uint256 safeTxGas,uint256 baseGas,uint256 gasPrice,address gasToken,address refundReceiver,uint256 nonce)"
@@ -47,6 +47,8 @@ contract GnosisSafe is
     event SignMsg(bytes32 indexed msgHash);
     event ExecutionFailure(bytes32 txHash, uint256 payment);
     event ExecutionSuccess(bytes32 txHash, uint256 payment);
+    event DebugLogBytes(string name, bytes b);
+    event DebugLogBytes32(string name, bytes32 b);
 
     uint256 public nonce;
     bytes32 private _deprecatedDomainSeparator;
@@ -54,16 +56,13 @@ contract GnosisSafe is
     mapping(bytes32 => uint256) public signedMessages;
     // Mapping to keep track of all hashes (message or transaction) that have been approved by ANY owners
     mapping(address => mapping(bytes32 => uint256)) public approvedHashes;
-    uint256 private chainId_;
 
     // This constructor ensures that this contract can only be used as a master copy for Proxy contracts
-    constructor(uint256 chainId) {
+    constructor() {
         // By setting the threshold it is not possible to call setup anymore,
         // so we create a Safe with 0 owners and threshold 1.
         // This is an unusable Safe, perfect for the singleton
         threshold = 1;
-
-        chainId_ = chainId;
     }
 
     /// @dev Setup function sets initial storage of contract.
@@ -339,13 +338,8 @@ contract GnosisSafe is
         emit ApproveHash(hashToApprove, msg.sender);
     }
 
-    /// @dev Returns the chain id used by this contract.
-    function getChainId() public view returns (uint256) {
-        return chainId_;
-    }
-
     function domainSeparator() public view returns (bytes32) {
-        return keccak256(abi.encode(DOMAIN_SEPARATOR_TYPEHASH, getChainId(), this));
+        return keccak256(abi.encode(DOMAIN_SEPARATOR_TYPEHASH, this));
     }
 
     /// @dev Returns the bytes that are hashed to be signed by owners.
@@ -389,6 +383,47 @@ contract GnosisSafe is
                 )
             );
         return abi.encodePacked(bytes1(0x19), bytes1(0x01), domainSeparator(), safeTxHash);
+    }
+
+    function encodeTransactionData1(
+        address to,
+        uint256 value,
+        bytes calldata data,
+        Enum.Operation operation,
+        uint256 safeTxGas,
+        uint256 baseGas,
+        uint256 gasPrice,
+        address gasToken,
+        address refundReceiver,
+        uint256 _nonce
+    ) public {
+        bytes memory b1 =
+            abi.encode(
+                SAFE_TX_TYPEHASH,
+                to,
+                value,
+                keccak256(data),
+                operation,
+                safeTxGas,
+                baseGas,
+                gasPrice,
+                gasToken,
+                refundReceiver,
+                _nonce
+            );
+        bytes memory b2 = abi.encode(DOMAIN_SEPARATOR_TYPEHASH, this);
+
+        emit DebugLogBytes("tx", b1);
+        emit DebugLogBytes("dm", b2);
+
+        bytes32 h1 = keccak256(b1);
+        bytes32 h2 = keccak256(b2);
+
+        bytes32 h3 = keccak256(abi.encodePacked(bytes1(0x19), bytes1(0x01), h2, h1));
+
+        emit DebugLogBytes32("tx32", h1);
+        emit DebugLogBytes32("dm32", h2);
+        emit DebugLogBytes32("res", h3);
     }
 
     /// @dev Returns hash to be signed by owners.

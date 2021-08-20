@@ -23,7 +23,7 @@ There's also a deployed proxy instance: https://gnosis-apothem.xinfin.yodaplus.n
 To deploy contracts, use the following command:
 
 ```
-NODE_URL=http://localhost:8084 yarn deploy custom
+NODE_URL=https://gnosis-apothem.xinfin.yodaplus.net:8083 yarn deploy custom
 ```
 
 Where `NODE_URL` is a compatibility proxy instance.
