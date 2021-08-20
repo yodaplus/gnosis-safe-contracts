@@ -18,6 +18,8 @@ yarn
 PORT=8084 yarn start
 ```
 
+There's also a deployed proxy instance: https://gnosis-apothem.xinfin.yodaplus.net:8083
+
 To deploy contracts, use the following command:
 
 ```
