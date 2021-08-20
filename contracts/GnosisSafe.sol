@@ -385,47 +385,6 @@ contract GnosisSafe is
         return abi.encodePacked(bytes1(0x19), bytes1(0x01), domainSeparator(), safeTxHash);
     }
 
-    function encodeTransactionData1(
-        address to,
-        uint256 value,
-        bytes calldata data,
-        Enum.Operation operation,
-        uint256 safeTxGas,
-        uint256 baseGas,
-        uint256 gasPrice,
-        address gasToken,
-        address refundReceiver,
-        uint256 _nonce
-    ) public {
-        bytes memory b1 =
-            abi.encode(
-                SAFE_TX_TYPEHASH,
-                to,
-                value,
-                keccak256(data),
-                operation,
-                safeTxGas,
-                baseGas,
-                gasPrice,
-                gasToken,
-                refundReceiver,
-                _nonce
-            );
-        bytes memory b2 = abi.encode(DOMAIN_SEPARATOR_TYPEHASH, this);
-
-        emit DebugLogBytes("tx", b1);
-        emit DebugLogBytes("dm", b2);
-
-        bytes32 h1 = keccak256(b1);
-        bytes32 h2 = keccak256(b2);
-
-        bytes32 h3 = keccak256(abi.encodePacked(bytes1(0x19), bytes1(0x01), h2, h1));
-
-        emit DebugLogBytes32("tx32", h1);
-        emit DebugLogBytes32("dm32", h2);
-        emit DebugLogBytes32("res", h3);
-    }
-
     /// @dev Returns hash to be signed by owners.
     /// @param to Destination address.
     /// @param value Ether value.
